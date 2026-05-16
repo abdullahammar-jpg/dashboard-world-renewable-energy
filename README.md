@@ -2,7 +2,7 @@
 
 Dashboard interaktif berbasis web untuk menganalisis data **Emisi CO2**, **Energi Terbarukan (EBT)**, dan **Kehilangan Hutan** secara global maupun per negara.
 
-link dashboard 
+link dashboard: 
 ```bash
 https://dashboard-world-renewable-energy.streamlit.app/
 ```
