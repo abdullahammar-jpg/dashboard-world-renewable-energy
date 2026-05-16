@@ -374,7 +374,7 @@ function updateBubbleChart(snapshotData) {
         grid: { left: '15%', right: '8%', bottom: '15%', top: '15%' },
         xAxis: {
             type: 'value',
-            name: 'Energi Terbarukan (%)',
+            name: 'Rata-rata Energi Terbarukan (%)',
             nameLocation: 'middle',
             nameGap: 30,
             splitLine: { lineStyle: { color: colors.gridLine } },
@@ -383,7 +383,7 @@ function updateBubbleChart(snapshotData) {
         },
         yAxis: {
             type: 'value',
-            name: 'Emisi CO2/Kapita',
+            name: 'Rata-rata Emisi CO2/Kapita',
             nameTextStyle: { color: colors.textMuted, padding: [0, 0, 0, 30] },
             splitLine: { lineStyle: { color: colors.gridLine } },
             axisLabel: { color: colors.textMuted }
