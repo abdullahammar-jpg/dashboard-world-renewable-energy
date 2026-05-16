@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Analitik Lingkungan</title>
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- noUiSlider CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/15.7.1/nouislider.min.css">
+    <!-- Styles -->
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="dashboard-container">
+        <div class="dashboard-grid">
+
+            <!-- Row 1 -->
+            <div class="panel time">
+                <div class="panel-header">
+                    <i class="fa-regular fa-calendar"></i>
+                    <h3>Rentang Waktu</h3>
+                </div>
+                <div class="panel-content filter-content">
+                    <div class="range-slider-container">
+                        <div id="year-slider"></div>
+                        <div class="year-labels">
+                            <span id="year-start">1990</span>
+                            <span id="year-end">2022</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel title">
+                <div class="title-content">
+                    <h1>Dashboard Analitik Lingkungan</h1>
+                    <p>Integrasi Data CO2, Energi Terbarukan & Kehilangan Hutan</p>
+                </div>
+            </div>
+
+            <div class="panel country">
+                <div class="panel-header">
+                    <i class="fa-solid fa-globe"></i>
+                    <h3>Pilih Negara</h3>
+                </div>
+                <div class="panel-content filter-content">
+                    <select id="country-select" class="custom-select">
+                        <option value="World">Seluruh Dunia (Global)</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Row 2 & 3 Left: KPIs -->
+            <div class="panel kpi1 kpi-card">
+                <div class="kpi-icon"><i class="fa-solid fa-smog"></i></div>
+                <div class="kpi-info">
+                    <h3>Rata-rata Emisi CO2</h3>
+                    <h2 id="kpi-co2">0.00 <span class="unit">Mt</span></h2>
+                </div>
+            </div>
+
+            <div class="panel kpi2 kpi-card">
+                <div class="kpi-icon"><i class="fa-solid fa-bolt"></i></div>
+                <div class="kpi-info">
+                    <h3>Rata-rata EBT</h3>
+                    <h2 id="kpi-ebt">0.00 <span class="unit">%</span></h2>
+                </div>
+            </div>
+
+            <div class="panel kpi3 kpi-card">
+                <div class="kpi-icon"><i class="fa-solid fa-tree"></i></div>
+                <div class="kpi-info">
+                    <h3>Total Kehilangan Hutan</h3>
+                    <h2 id="kpi-forest">0.00 <span class="unit">Mha</span></h2>
+                </div>
+            </div>
+
+            <!-- Row 2 & 3 Center: Map -->
+            <div class="panel map">
+                <div class="panel-header">
+                    <h3>Choropleth Map Distribusi Emisi CO2 per Kapita</h3>
+                </div>
+                <div class="panel-content chart-container" id="map-chart">
+                    <div class="loading-overlay"><i class="fa-solid fa-spinner fa-spin"></i> Memuat Peta...</div>
+                </div>
+            </div>
+
+            <!-- Row 2 & 3 Right: Bubble Chart -->
+            <div class="panel bubble">
+                <div class="panel-header">
+                    <h3>Emisi CO2 per Kapita vs Renewable Energy</h3>
+                </div>
+                <div class="panel-content chart-container" id="bubble-chart"></div>
+            </div>
+
+            <!-- Row 4 -->
+            <div class="panel line">
+                <div class="panel-header">
+                    <h3>Tren EBT, Emisi CO2, & Kehilangan Hutan</h3>
+                </div>
+                <div class="panel-content chart-container" id="line-chart"></div>
+            </div>
+
+            <div class="panel pie">
+                <div class="panel-header">
+                    <h3>Komposisi Sumber Listrik</h3>
+                </div>
+                <div class="panel-content chart-container" id="pie-chart"></div>
+            </div>
+
+            <div class="panel top5">
+                <div class="panel-header">
+                    <h3>Top 5 Negara: Pencapaian EBT Terbaik</h3>
+                </div>
+                <div class="panel-content chart-container" id="top5-chart"></div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/15.7.1/nouislider.min.js"></script>
+    <!-- ECharts -->
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.5.0/dist/echarts.min.js"></script>
+    <!-- Data -->
+    <script src="data.js"></script>
+    <!-- Custom Logic -->
+    <script src="script.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,15 @@
+# Generated file — do not commit (will be auto-generated from CSVs at startup)
+data.js
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+.env
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Temp scripts
+check_names.py
