@@ -349,15 +349,15 @@ function updateMapChart(snapshotData) {
 }
 
 function updateBubbleChart(snapshotData) {
-    const validData = snapshotData.filter(d => d.renewable_primary != null && d.co2_capita != null && d.co2_total != null);
+    const validData = snapshotData.filter(d => d.renewable_primary != null && d.co2_capita != null);
     
-    const maxCo2 = Math.max(...validData.map(d => d.co2_total), 1);
+    const maxCo2 = Math.max(...validData.map(d => d.co2_capita), 1);
 
     const bubbleData = validData.map(d => {
         const isSelected = currentCountry === 'World' || d.Entity === currentCountry;
         return {
             name: d.Entity,
-            value: [d.renewable_primary, d.co2_capita, d.co2_total, d.Entity],
+            value: [d.renewable_primary, d.co2_capita, d.co2_capita, d.Entity],
             itemStyle: isSelected ? {} : { color: '#475569', opacity: 0.1 }
         };
     });
@@ -366,7 +366,9 @@ function updateBubbleChart(snapshotData) {
         tooltip: {
             ...tooltipStyle,
             formatter: function (param) {
-                return `${param.data.value[3]}<br/>EBT: ${param.data.value[0].toFixed(1)}%<br/>Emisi: ${param.data.value[1].toFixed(2)} tCO2/cap`;
+                const ebt = param.data.value[0].toFixed(2);
+                const co2 = param.data.value[1].toFixed(2);
+                return `<strong>${param.data.value[3]}</strong><br/>Rata-rata EBT: ${ebt}%<br/>Rata-rata CO2/Kapita: ${co2} tCO2/org`;
             }
         },
         grid: { left: '15%', right: '8%', bottom: '15%', top: '15%' },
