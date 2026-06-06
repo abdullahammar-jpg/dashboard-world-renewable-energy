@@ -4,6 +4,7 @@ import os
 import subprocess
 import sys
 import re
+import base64
 
 st.set_page_config(
     page_title="Dashboard Analitik Lingkungan",
@@ -65,6 +66,13 @@ body_match   = re.search(r'<body>(.*?)</body>', html_full, re.DOTALL)
 body_content = body_match.group(1).strip() if body_match else ""
 body_content = re.sub(r'<script src="data\.js"[^>]*>.*?</script>',   '', body_content, flags=re.DOTALL)
 body_content = re.sub(r'<script src="script\.js"[^>]*>.*?</script>', '', body_content, flags=re.DOTALL)
+
+# Embed IPB logo as base64 data URI so it works in the self-contained iframe
+logo_path = os.path.join(STATIC_DIR, "ipb_logo.png")
+if os.path.exists(logo_path):
+    with open(logo_path, "rb") as img_f:
+        logo_b64 = base64.b64encode(img_f.read()).decode("utf-8")
+    body_content = body_content.replace('src="ipb_logo.png"', f'src="data:image/png;base64,{logo_b64}"')
 
 # Build self-contained HTML — uses 100vh naturally since iframe = full viewport
 combined_html = f"""<!DOCTYPE html>

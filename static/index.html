@@ -17,29 +17,42 @@
 
 <body>
     <div class="dashboard-container">
-        <div class="dashboard-grid">
-
-            <!-- Row 1 -->
+        
+        <!-- Global Header Row (Suku filter & Judul bersama) -->
+        <div class="global-header-grid">
             <div class="panel time">
                 <div class="panel-header">
                     <i class="fa-regular fa-calendar"></i>
                     <h3>Rentang Waktu</h3>
                 </div>
                 <div class="panel-content filter-content">
-                    <div class="range-slider-container">
-                        <div id="year-slider"></div>
-                        <div class="year-labels">
-                            <span id="year-start">1990</span>
-                            <span id="year-end">2022</span>
+                    <div class="time-filter-row">
+                        <button id="play-button" class="play-btn" type="button" title="Mulai/Jeda Animasi"><i class="fa-solid fa-play"></i></button>
+                        <div class="range-slider-container">
+                            <div id="year-slider"></div>
+                            <div class="year-labels">
+                                <span id="year-start">1990</span>
+                                <span id="year-end">2022</span>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
 
             <div class="panel title">
-                <div class="title-content">
-                    <h1>Dashboard Analitik Lingkungan</h1>
-                    <p>Integrasi Data CO2, Energi Terbarukan & Kehilangan Hutan</p>
+                <div class="title-container-split">
+                    <div class="title-left">
+                        <img src="ipb_logo.png" alt="IPB University" class="ipb-logo" />
+                        <div class="title-content">
+                            <h1>Dashboard Analitik Lingkungan</h1>
+                            <p>MK Visualisasi Data (STA1262) - Pararel 8 - <span class="kelompok-hover" id="kelompok-trigger">Kelompok 3<span class="kelompok-tooltip" id="kelompok-tooltip">Rizky Arif Wicaksono (M0401241054)<br>Siti Keira Zuleyqa (M0401241056)<br>Justin Julio Caesar Tatengki (M0401241064)<br>Abdullah' Ammar Rabbaniyyin (M0401241066)<br>Adisti Chairunnisa Maharatih (M0401241102)</span></span></p>
+                        </div>
+                    </div>
+                    <!-- Tab Buttons inside Title Panel -->
+                    <div class="dashboard-tabs">
+                        <button class="tab-btn active" id="tab-page1" data-page="page1" type="button">Ringkasan Global</button>
+                        <button class="tab-btn" id="tab-page2" data-page="page2" type="button">Profil Emisi &amp; Lahan</button>
+                    </div>
                 </div>
             </div>
 
@@ -49,15 +62,30 @@
                     <h3>Pilih Negara</h3>
                 </div>
                 <div class="panel-content filter-content">
-                    <select id="country-select" class="custom-select">
-                        <option value="World">Seluruh Dunia (Global)</option>
-                    </select>
+                    <div class="custom-dropdown" id="country-dropdown">
+                        <button class="dropdown-trigger" id="dropdown-trigger" type="button">
+                            <span id="selected-country-text">Seluruh Dunia (Global)</span>
+                            <i class="fa-solid fa-chevron-down"></i>
+                        </button>
+                        <div class="dropdown-menu" id="dropdown-menu">
+                            <div class="dropdown-search-wrapper">
+                                <i class="fa-solid fa-magnifying-glass search-icon"></i>
+                                <input type="text" id="dropdown-search" placeholder="Cari negara..." autocomplete="off">
+                            </div>
+                            <div class="dropdown-options" id="dropdown-options">
+                                <!-- Opsi negara akan dimuat dinamis dari JS -->
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
+        </div>
 
+        <!-- Page 1 Grid: Ringkasan Global & Transisi Energi -->
+        <div class="page-grid active" id="page1">
             <!-- Row 2 & 3 Left: KPIs -->
             <div class="panel kpi1 kpi-card">
-                <div class="kpi-icon"><i class="fa-solid fa-smog"></i></div>
+                <div class="kpi-icon"></div>
                 <div class="kpi-info">
                     <h3>Rata-rata Emisi CO2</h3>
                     <h2 id="kpi-co2">0.00 <span class="unit">Mt</span></h2>
@@ -65,7 +93,7 @@
             </div>
 
             <div class="panel kpi2 kpi-card">
-                <div class="kpi-icon"><i class="fa-solid fa-bolt"></i></div>
+                <div class="kpi-icon"></div>
                 <div class="kpi-info">
                     <h3>Rata-rata EBT</h3>
                     <h2 id="kpi-ebt">0.00 <span class="unit">%</span></h2>
@@ -73,7 +101,7 @@
             </div>
 
             <div class="panel kpi3 kpi-card">
-                <div class="kpi-icon"><i class="fa-solid fa-tree"></i></div>
+                <div class="kpi-icon"></div>
                 <div class="kpi-info">
                     <h3>Total Kehilangan Hutan</h3>
                     <h2 id="kpi-forest">0.00 <span class="unit">Mha</span></h2>
@@ -82,8 +110,13 @@
 
             <!-- Row 2 & 3 Center: Map -->
             <div class="panel map">
-                <div class="panel-header">
-                    <h3>Choropleth Map Distribusi Emisi CO2 per Kapita</h3>
+                <div class="panel-header map-header">
+                    <h3>Peta Distribusi Lingkungan</h3>
+                    <div class="map-metric-tabs">
+                        <button class="map-tab active" data-metric="co2_capita" type="button">CO₂/Kapita</button>
+                        <button class="map-tab" data-metric="renewable_primary" type="button">EBT %</button>
+                        <button class="map-tab" data-metric="forest_loss" type="button">Hutan Hilang</button>
+                    </div>
                 </div>
                 <div class="panel-content chart-container" id="map-chart">
                     <div class="loading-overlay"><i class="fa-solid fa-spinner fa-spin"></i> Memuat Peta...</div>
@@ -100,8 +133,12 @@
 
             <!-- Row 4 -->
             <div class="panel line">
-                <div class="panel-header">
-                    <h3>Tren EBT, Emisi CO2, & Kehilangan Hutan</h3>
+                <div class="panel-header line-header">
+                    <h3>Analisis Tren</h3>
+                    <div class="line-toggle-tabs">
+                        <button class="line-tab active" data-view="ebt_co2" type="button">EBT & CO₂</button>
+                        <button class="line-tab" data-view="forest" type="button">Hutan Hilang</button>
+                    </div>
                 </div>
                 <div class="panel-content chart-container" id="line-chart"></div>
             </div>
@@ -119,8 +156,60 @@
                 </div>
                 <div class="panel-content chart-container" id="top5-chart"></div>
             </div>
-
         </div>
+
+        <!-- Page 2 Grid: Profil Emisi Mendalam & Lahan -->
+        <div class="page-grid" id="page2">
+            <!-- Row 2 & 3 Left: KPIs Baru -->
+            <div class="panel kpi-cum kpi-card">
+                <div class="kpi-icon"></div>
+                <div class="kpi-info">
+                    <h3>Kumulatif Historis CO2</h3>
+                    <h2 id="kpi-co2-cumulative">0.00 <span class="unit">Gt</span></h2>
+                </div>
+            </div>
+
+            <div class="panel kpi-land kpi-card">
+                <div class="kpi-icon"></div>
+                <div class="kpi-info">
+                    <h3>Total Emisi Lahan</h3>
+                    <h2 id="kpi-co2-landuse">0.00 <span class="unit">Mt</span></h2>
+                </div>
+            </div>
+
+            <div class="panel kpi-target kpi-card">
+                <div class="kpi-icon"></div>
+                <div class="kpi-info">
+                    <h3>Total Emisi Fosil</h3>
+                    <h2 id="kpi-net-zero" style="font-weight: 800; color: var(--text-main); margin-bottom: 0;">-</h2>
+                </div>
+            </div>
+
+            <!-- Row 2 & 3 Center: Stacked Area Chart (Emisi Sektoral per Kapita) -->
+            <div class="panel stacked-chart-panel">
+                <div class="panel-header">
+                    <h3>Sumber Emisi CO2 per Kapita (tCO2/kapita)</h3>
+                </div>
+                <div class="panel-content chart-container" id="stacked-source-chart"></div>
+            </div>
+
+            <!-- Row 2 & 3 Right: Bar Chart Perbandingan Kumulatif Historis -->
+            <div class="panel cumulative-chart-panel">
+                <div class="panel-header">
+                    <h3>Komparasi Tanggung Jawab Historis (Gt CO2)</h3>
+                </div>
+                <div class="panel-content chart-container" id="cumulative-bar-chart"></div>
+            </div>
+
+            <!-- Row 4: Korelasi Hutan vs Emisi Lahan -->
+            <div class="panel correlation-chart-panel">
+                <div class="panel-header">
+                    <h3>Korelasi Kehilangan Hutan vs Emisi Alih Fungsi Lahan</h3>
+                </div>
+                <div class="panel-content chart-container" id="land-use-forest-chart"></div>
+            </div>
+        </div>
+
     </div>
 
     <!-- Scripts -->
