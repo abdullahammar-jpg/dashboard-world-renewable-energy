@@ -11,13 +11,15 @@ https://dashboard-world-renewable-energy.streamlit.app/
 
 ## ✨ Fitur
 
-- 🗺️ **Choropleth Map** — Distribusi Emisi CO2 per kapita seluruh dunia
-- 💧 **Bubble Chart** — Hubungan antara EBT vs Emisi CO2 per kapita
-- 📈 **Line Chart** — Tren EBT dan CO2/kapita per tahun
-- 🥧 **Pie Chart** — Komposisi sumber listrik (Terbarukan vs Fosil & Nuklir)
-- 🏆 **Bar Chart** — Top 5 negara dengan pencapaian EBT terbaik
-- 🎚️ **Filter Rentang Waktu** — Slider tahun interaktif
-- 🌐 **Filter Negara** — Highlight per negara dengan efek abu-abu pada negara lain
+- **Choropleth Map** — Distribusi Emisi CO2 per kapita/EBT/Hutan Hilang seluruh dunia
+- **Bubble Chart** — Hubungan antara EBT vs Emisi CO2 per kapita
+- **Line Chart** — Tren EBT dan CO2/kapita per tahun serta line chart hutan hilang
+- **Pie Chart** — Komposisi sumber listrik (Terbarukan vs Fosil & Nuklir)
+- **Bar Chart** — Top 5 negara dengan pencapaian EBT terbaik
+- **Filter Rentang Waktu** — Slider tahun interaktif
+- **Filter Negara** — Highlight per negara dengan efek abu-abu pada negara lain
+- **Tren Land use** — Perbandingan emisi CO2 dari alih fungsi lahan dengan kehilangan hutan
+- **Area Chart** — Sumber emisi CO2
 
 ---
 
