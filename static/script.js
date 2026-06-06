@@ -1642,12 +1642,16 @@ function updateStackedSourceChart() {
 function updateCumulativeBarChart() {
     if (!cumulativeBarChart) return;
     
-    const entitiesToCompare = ['United States', 'China', 'India', 'Indonesia'];
-    if (currentCountry === 'World') {
-        entitiesToCompare.push('Russia');
-    } else if (entitiesToCompare.includes(currentCountry)) {
-        entitiesToCompare.push('Russia');
-    } else {
+    // Top 5 historical cumulative emitters in 2022
+    const topEmitters = ['United States', 'China', 'Russia', 'Germany', 'United Kingdom'];
+    
+    // Build the list of countries to compare
+    const entitiesToCompare = [...topEmitters];
+    
+    const isAnySelected = currentCountry !== 'World';
+    
+    // If a country is selected and it is not in the top 5, append it as a 6th country
+    if (isAnySelected && !topEmitters.includes(currentCountry)) {
         entitiesToCompare.push(currentCountry);
     }
     
@@ -1696,13 +1700,13 @@ function updateCumulativeBarChart() {
                         '#f56565', // lowest cumulative CO2 -> brightest red
                         '#e53e3e',
                         '#c53030',
+                        '#b91c1c',
                         '#991b1b',
                         '#7f1d1d'  // highest cumulative CO2 -> darkest red
                     ];
+                    // Map the index to the color range dynamically based on array length
                     const shadeIndex = Math.round((index / (compareData.length - 1)) * 4);
                     const baseColor = redShades[shadeIndex];
-                    
-                    const isAnySelected = currentCountry !== 'World';
                     
                     let barColor;
                     let barOpacity;
@@ -1739,7 +1743,7 @@ function updateCumulativeBarChart() {
                     color: colors.textMuted,
                     formatter: '{c} Gt'
                 },
-                barWidth: '50%'
+                barWidth: compareData.length > 5 ? '45%' : '50%'
             }
         ]
     };
