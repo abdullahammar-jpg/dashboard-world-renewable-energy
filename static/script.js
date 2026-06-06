@@ -1396,7 +1396,6 @@ function updateTop5Chart(snapshotData) {
                 name: 'Share EBT (%)',
                 type: 'bar',
                 data: top5.map((d, index) => {
-                    const isSelected = currentCountry === 'World' || d.Entity === currentCountry;
                     const greenShades = [
                         '#065f46', // 5th place (darkest)
                         '#047857', // 4th place
@@ -1404,11 +1403,29 @@ function updateTop5Chart(snapshotData) {
                         '#10b981', // 2nd place
                         '#34d399'  // 1st place (brightest green)
                     ];
+                    
+                    const isAnyInTop5 = currentCountry !== 'World' && top5.some(item => item.Entity === currentCountry);
+                    
+                    let barColor;
+                    let barOpacity;
+                    if (isAnyInTop5) {
+                        if (d.Entity === currentCountry) {
+                            barColor = greenShades[index];
+                            barOpacity = 1;
+                        } else {
+                            barColor = '#475569'; // gray
+                            barOpacity = 0.55;
+                        }
+                    } else {
+                        barColor = greenShades[index];
+                        barOpacity = (currentCountry === 'World') ? 1 : 0.4;
+                    }
+                    
                     return {
                         value: Number(d.renewable_primary.toFixed(2)),
                         itemStyle: {
-                            color: greenShades[index],
-                            opacity: isSelected ? 1 : 0.35,
+                            color: barColor,
+                            opacity: barOpacity,
                             borderRadius: [0, 4, 4, 0]
                         }
                     };
@@ -1626,7 +1643,11 @@ function updateCumulativeBarChart() {
     if (!cumulativeBarChart) return;
     
     const entitiesToCompare = ['United States', 'China', 'India', 'Indonesia'];
-    if (!entitiesToCompare.includes(currentCountry) && currentCountry !== 'World') {
+    if (currentCountry === 'World') {
+        entitiesToCompare.push('Russia');
+    } else if (entitiesToCompare.includes(currentCountry)) {
+        entitiesToCompare.push('Russia');
+    } else {
         entitiesToCompare.push(currentCountry);
     }
     
@@ -1671,7 +1692,6 @@ function updateCumulativeBarChart() {
                 name: 'Emisi Kumulatif',
                 type: 'bar',
                 data: compareData.map((d, index) => {
-                    const isSelected = currentCountry === 'World' || d.name === currentCountry;
                     const redShades = [
                         '#f56565', // lowest cumulative CO2 -> brightest red
                         '#e53e3e',
@@ -1681,11 +1701,29 @@ function updateCumulativeBarChart() {
                     ];
                     const shadeIndex = Math.round((index / (compareData.length - 1)) * 4);
                     const baseColor = redShades[shadeIndex];
+                    
+                    const isAnySelected = currentCountry !== 'World';
+                    
+                    let barColor;
+                    let barOpacity;
+                    if (isAnySelected) {
+                        if (d.name === currentCountry) {
+                            barColor = baseColor;
+                            barOpacity = 1;
+                        } else {
+                            barColor = '#475569'; // gray
+                            barOpacity = 0.55;
+                        }
+                    } else {
+                        barColor = baseColor;
+                        barOpacity = 1;
+                    }
+                    
                     return {
                         value: Number(d.value.toFixed(2)),
                         itemStyle: {
-                            color: baseColor,
-                            opacity: isSelected ? 1 : 0.35,
+                            color: barColor,
+                            opacity: barOpacity,
                             borderRadius: [0, 4, 4, 0]
                         }
                     };
