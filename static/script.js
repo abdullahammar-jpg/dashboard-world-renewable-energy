@@ -941,7 +941,7 @@ function updateBubbleChart(snapshotData) {
         yAxis: {
             type: 'value',
             name: 'Rerata CO2/Kapita',
-            nameTextStyle: { color: colors.textMuted, padding: [0, 0, 0, 30] },
+            nameTextStyle: { color: colors.textMuted, align: 'left' },
             splitLine: { lineStyle: { color: colors.gridLine } },
             axisLabel: { color: colors.textMuted }
         },
