@@ -799,11 +799,23 @@ function updateMapChart(snapshotData) {
             trigger: 'item',
             formatter: function(params) {
                 if(isNaN(params.value)) return params.name;
-                let valStr = params.value.toFixed(2);
+                let formattedValue = '';
                 if (currentMapMetric === 'forest_loss') {
-                    valStr = params.value >= 1000 ? (params.value/1000).toFixed(2) + ' Ribu ha' : params.value.toFixed(0) + ' ha';
+                    if (params.value >= 1000000) {
+                        formattedValue = (params.value / 1000000).toFixed(2) + ' Juta ha/tahun';
+                    } else if (params.value >= 1000) {
+                        formattedValue = (params.value / 1000).toFixed(2) + ' Ribu ha/tahun';
+                    } else {
+                        formattedValue = params.value.toFixed(0) + ' ha/tahun';
+                    }
+                    return `${params.name}<br/>Kehilangan Hutan: <strong>${formattedValue}</strong>`;
+                } else if (currentMapMetric === 'renewable_primary') {
+                    formattedValue = params.value.toFixed(2) + ' %';
+                    return `${params.name}<br/>Bauran EBT: <strong>${formattedValue}</strong>`;
+                } else {
+                    formattedValue = params.value.toFixed(2) + ' tCO₂/kapita';
+                    return `${params.name}<br/>Emisi CO₂/Kapita: <strong>${formattedValue}</strong>`;
                 }
-                return `${params.name}<br/>${valStr} ${unitLabel}`;
             }
         },
         visualMap: {
