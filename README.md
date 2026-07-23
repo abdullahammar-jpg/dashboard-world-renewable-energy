@@ -104,7 +104,10 @@ Aplikasi akan otomatis terbuka di `http://localhost:8501`.
 | Emisi CO2 per Kapita | Our World in Data |
 | Energi Terbarukan (Konsumsi Primer) | Our World in Data |
 | Komposisi Sumber Listrik | Our World in Data |
-| Kehilangan Hutan | Data primer (diolah) |
+| Kehilangan Hutan | Global Forest Watch |
+| Emisi CO2 dari fosil dan lahan | Our World in Data |
+| Emisi CO2 kumulatif | Our World in Data |
+| Emisi CO2 berdasarkan jenis bahan bakar | Our World in Data |
 
 ---
 
