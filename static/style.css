@@ -549,10 +549,6 @@ body {
     background: var(--accent-green);
 }
 
-.map-tab.active[data-metric="forest_loss"] {
-    background: var(--accent-yellow);
-}
-
 /* Split title panel styling */
 .title-container-split {
     display: flex;

@@ -104,8 +104,11 @@ function initCharts() {
     if (mapContainer) {
         mapChart = echarts.init(mapContainer);
     }
+    const lineElem = document.getElementById('line-chart');
+    if (lineElem) {
+        lineChart = echarts.init(lineElem);
+    }
     bubbleChart = echarts.init(document.getElementById('bubble-chart'));
-    lineChart = echarts.init(document.getElementById('line-chart'));
     pieChart = echarts.init(document.getElementById('pie-chart'));
     top5Chart = echarts.init(document.getElementById('top5-chart'));
     
@@ -115,10 +118,10 @@ function initCharts() {
 
     window.addEventListener('resize', () => {
         if(mapChart) mapChart.resize();
-        bubbleChart.resize();
-        lineChart.resize();
+        if(bubbleChart) bubbleChart.resize();
+        if(lineChart) lineChart.resize();
         if(pieChart) pieChart.resize();
-        top5Chart.resize();
+        if(top5Chart) top5Chart.resize();
         if(stackedSourceChart) stackedSourceChart.resize();
         if(cumulativeBarChart) cumulativeBarChart.resize();
         if(landUseForestChart) landUseForestChart.resize();
@@ -978,6 +981,7 @@ function updateBubbleChart(snapshotData) {
 }
 
 function updateLineChart() {
+    if (!lineChart) return;
     let years, co2Capita, ebt, forest;
     
     // 1. Get Selected Country Data
@@ -1034,7 +1038,7 @@ function updateLineChart() {
         worldForestAvg = worldYears.map(y => (forestByYearWorld[y] && forestCountWorld[y]) ? forestByYearWorld[y] / forestCountWorld[y] : 0);
     }
 
-    // 3. Configure Series and Axes depending on active Toggle View
+    // Configure Series and Axes for EBT & CO2
     let option = {};
     const seriesList = [];
     const legendList = [];
@@ -1047,207 +1051,123 @@ function updateLineChart() {
         data: [{ xAxis: currentStartYear.toString() }]
     } : null;
 
-    if (currentLineView === 'ebt_co2') {
-        // EBT and CO2 view
-        legendList.push('EBT', 'CO2/Kapita');
-        seriesList.push(
-            {
-                name: 'EBT',
-                type: 'line',
-                yAxisIndex: 0,
-                smooth: true,
-                data: ebt,
-                symbol: 'circle',
-                symbolSize: 4,
-                itemStyle: { color: colors.green },
-                lineStyle: { width: 3 },
-                areaStyle: {
-                    color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-                        { offset: 0, color: 'rgba(16, 185, 129, 0.25)' },
-                        { offset: 1, color: 'rgba(16, 185, 129, 0.0)' }
-                    ])
-                },
-                markLine: markLineOpt
-            },
-            {
-                name: 'CO2/Kapita',
-                type: 'line',
-                yAxisIndex: 1,
-                smooth: true,
-                data: co2Capita,
-                symbol: 'circle',
-                symbolSize: 4,
-                lineStyle: { width: 3 },
-                itemStyle: { color: colors.red }
-            }
-        );
-
-        // Append dashed global benchmark lines
-        if (currentCountry !== 'World') {
-            legendList.push({
-                name: 'Rerata Dunia',
-                itemStyle: { color: colors.textMuted }
-            });
-            seriesList.push(
-                {
-                    name: 'Rerata Dunia',
-                    type: 'line',
-                    yAxisIndex: 0,
-                    smooth: true,
-                    data: worldEbt,
-                    symbol: 'none',
-                    lineStyle: { type: 'dashed', width: 1.5, opacity: 0.6, color: colors.green },
-                    itemStyle: { color: colors.green }
-                },
-                {
-                    name: 'Rerata Dunia',
-                    type: 'line',
-                    yAxisIndex: 1,
-                    smooth: true,
-                    data: worldCo2Capita,
-                    symbol: 'none',
-                    lineStyle: { type: 'dashed', width: 1.5, opacity: 0.6, color: colors.red },
-                    itemStyle: { color: colors.red }
-                }
-            );
-        }
-
-        option = {
-            tooltip: { 
-                ...tooltipStyle, 
-                trigger: 'axis',
-                formatter: function(params) {
-                    let s = `<strong>${params[0].axisValue}</strong><br/>`;
-                    params.forEach(p => {
-                        const v = p.value;
-                        if (v == null || isNaN(v)) return;
-                        // Even seriesIndex (0, 2) is EBT, Odd seriesIndex (1, 3) is CO2
-                        if (p.seriesIndex % 2 === 1) {
-                            const displayName = p.seriesName === 'Rerata Dunia' ? 'Rerata Dunia (CO₂)' : p.seriesName;
-                            s += `${p.marker} ${displayName}: <strong>${v.toFixed(2)} tCO₂/kapita</strong><br/>`;
-                        } else {
-                            const displayName = p.seriesName === 'Rerata Dunia' ? 'Rerata Dunia (EBT)' : p.seriesName;
-                            s += `${p.marker} ${displayName}: <strong>${v.toFixed(1)}%</strong><br/>`;
-                        }
-                    });
-                    return s;
-                }
-            },
-            legend: {
-                data: legendList,
-                textStyle: { fontSize: 8.5, color: colors.textMuted },
-                top: 0,
-                itemWidth: 12,
-                itemHeight: 8,
-                itemGap: 8
-            },
-            grid: { left: '3%', right: '3%', bottom: '5%', top: '22%', containLabel: true },
-            xAxis: {
-                type: 'category',
-                data: years.map(String),
-                axisLabel: { color: colors.textMuted },
-                axisLine: { lineStyle: { color: colors.gridLine } }
-            },
-            yAxis: [
-                {
-                    type: 'value',
-                    name: 'EBT (%)',
-                    nameTextStyle: { color: colors.green, fontSize: 9 },
-                    splitLine: { lineStyle: { color: colors.gridLine } },
-                    axisLabel: { color: colors.green, fontSize: 9, formatter: v => v.toFixed(0) }
-                },
-                {
-                    type: 'value',
-                    name: 'CO2/Kapita',
-                    nameTextStyle: { color: colors.red, fontSize: 9 },
-                    position: 'right',
-                    splitLine: { show: false },
-                    axisLabel: { color: colors.red, fontSize: 9, formatter: v => v.toFixed(1) }
-                }
-            ],
-            series: seriesList
-        };
-    } else {
-        // Forest loss view
-        legendList.push('Hutan Hilang');
-        seriesList.push({
-            name: 'Hutan Hilang',
+    legendList.push('EBT', 'CO2/Kapita');
+    seriesList.push(
+        {
+            name: 'EBT',
             type: 'line',
+            yAxisIndex: 0,
             smooth: true,
-            data: forest,
+            data: ebt,
             symbol: 'circle',
             symbolSize: 4,
-            itemStyle: { color: colors.yellow },
+            itemStyle: { color: colors.green },
             lineStyle: { width: 3 },
             areaStyle: {
                 color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-                    { offset: 0, color: 'rgba(234, 179, 8, 0.25)' },
-                    { offset: 1, color: 'rgba(234, 179, 8, 0.0)' }
+                    { offset: 0, color: 'rgba(16, 185, 129, 0.25)' },
+                    { offset: 1, color: 'rgba(16, 185, 129, 0.0)' }
                 ])
             },
             markLine: markLineOpt
-        });
-
-        if (currentCountry !== 'World') {
-            legendList.push({
-                name: 'Hutan Hilang (Rerata Dunia)',
-                itemStyle: { color: colors.textMuted }
-            });
-            seriesList.push({
-                name: 'Hutan Hilang (Rerata Dunia)',
-                type: 'line',
-                smooth: true,
-                data: worldForestAvg,
-                symbol: 'none',
-                lineStyle: { type: 'dashed', width: 1.5, opacity: 0.5, color: colors.yellow },
-                itemStyle: { color: colors.yellow }
-            });
+        },
+        {
+            name: 'CO2/Kapita',
+            type: 'line',
+            yAxisIndex: 1,
+            smooth: true,
+            data: co2Capita,
+            symbol: 'circle',
+            symbolSize: 4,
+            lineStyle: { width: 3 },
+            itemStyle: { color: colors.red }
         }
+    );
 
-        option = {
-            tooltip: { 
-                ...tooltipStyle, 
-                trigger: 'axis',
-                formatter: function(params) {
-                    let s = `<strong>${params[0].axisValue}</strong><br/>`;
-                    params.forEach(p => {
-                        const v = p.value;
-                        if (v == null || isNaN(v)) return;
-                        const valStr = v >= 1000 ? (v/1000).toFixed(2) + ' Ribu ha' : v.toFixed(0) + ' ha';
-                        s += `${p.marker} ${p.seriesName}: <strong>${valStr}</strong><br/>`;
-                    });
-                    return s;
-                }
+    // Append dashed global benchmark lines
+    if (currentCountry !== 'World') {
+        legendList.push({
+            name: 'Rerata Dunia',
+            itemStyle: { color: colors.textMuted }
+        });
+        seriesList.push(
+            {
+                name: 'Rerata Dunia',
+                type: 'line',
+                yAxisIndex: 0,
+                smooth: true,
+                data: worldEbt,
+                symbol: 'none',
+                lineStyle: { type: 'dashed', width: 1.5, opacity: 0.6, color: colors.green },
+                itemStyle: { color: colors.green }
             },
-            legend: {
-                data: legendList,
-                textStyle: { fontSize: 8.5, color: colors.textMuted },
-                top: 0,
-                itemWidth: 12,
-                itemHeight: 8,
-                itemGap: 8
-            },
-            grid: { left: '3%', right: '3%', bottom: '5%', top: '22%', containLabel: true },
-            xAxis: {
-                type: 'category',
-                data: years.map(String),
-                axisLabel: { color: colors.textMuted },
-                axisLine: { lineStyle: { color: colors.gridLine } }
-            },
-            yAxis: {
-                type: 'value',
-                name: 'Luas Hutan (ha)',
-                nameTextStyle: { color: colors.yellow, fontSize: 9 },
-                splitLine: { lineStyle: { color: colors.gridLine } },
-                axisLabel: { 
-                    color: colors.yellow, 
-                    fontSize: 9, 
-                    formatter: v => v >= 1000000 ? (v/1000000).toFixed(1) + 'M' : v >= 1000 ? (v/1000).toFixed(0) + 'K' : v.toFixed(0)
-                }
-            },
-            series: seriesList
-        };
+            {
+                name: 'Rerata Dunia',
+                type: 'line',
+                yAxisIndex: 1,
+                smooth: true,
+                data: worldCo2Capita,
+                symbol: 'none',
+                lineStyle: { type: 'dashed', width: 1.5, opacity: 0.6, color: colors.red },
+                itemStyle: { color: colors.red }
+            }
+        );
     }
+
+    option = {
+        tooltip: { 
+            ...tooltipStyle, 
+            trigger: 'axis',
+            formatter: function(params) {
+                let s = `<strong>${params[0].axisValue}</strong><br/>`;
+                params.forEach(p => {
+                    const v = p.value;
+                    if (v == null || isNaN(v)) return;
+                    if (p.seriesIndex % 2 === 1) {
+                        const displayName = p.seriesName === 'Rerata Dunia' ? 'Rerata Dunia (CO₂)' : p.seriesName;
+                        s += `${p.marker} ${displayName}: <strong>${v.toFixed(2)} tCO₂/kapita</strong><br/>`;
+                    } else {
+                        const displayName = p.seriesName === 'Rerata Dunia' ? 'Rerata Dunia (EBT)' : p.seriesName;
+                        s += `${p.marker} ${displayName}: <strong>${v.toFixed(1)}%</strong><br/>`;
+                    }
+                });
+                return s;
+            }
+        },
+        legend: {
+            data: legendList,
+            textStyle: { fontSize: 8.5, color: colors.textMuted },
+            top: 0,
+            itemWidth: 12,
+            itemHeight: 8,
+            itemGap: 8
+        },
+        grid: { left: '3%', right: '3%', bottom: '5%', top: '22%', containLabel: true },
+        xAxis: {
+            type: 'category',
+            data: years.map(String),
+            axisLabel: { color: colors.textMuted },
+            axisLine: { lineStyle: { color: colors.gridLine } }
+        },
+        yAxis: [
+            {
+                type: 'value',
+                name: 'EBT (%)',
+                nameTextStyle: { color: colors.green, fontSize: 9 },
+                splitLine: { lineStyle: { color: colors.gridLine } },
+                axisLabel: { color: colors.green, fontSize: 9, formatter: v => v.toFixed(0) }
+            },
+            {
+                type: 'value',
+                name: 'CO2/Kapita',
+                nameTextStyle: { color: colors.red, fontSize: 9 },
+                position: 'right',
+                splitLine: { show: false },
+                axisLabel: { color: colors.red, fontSize: 9, formatter: v => v.toFixed(1) }
+            }
+        ],
+        series: seriesList
+    };
     
     lineChart.setOption(option, true);
 }
